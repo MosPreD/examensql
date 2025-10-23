@@ -1,7 +1,7 @@
 CREATE DATABASE COMERCIAL
 GO
 
-USE COMERCIAL
+USE COMERCIAL;
 GO
 
 CREATE TABLE Agencia
@@ -150,7 +150,7 @@ CREATE TABLE Stock
     TotalVentas FLOAT NOT NULL DEFAULT 0,
     TotalDevoluciones FLOAT NOT NULL DEFAULT 0,
     TotalTransferenciasSalida FLOAT NOT NULL DEFAULT 0,
-    TotalTranferenciasEntrada FLOAT NOT NULL DEFAULT 0,
+    TotalTransferenciasEntrada FLOAT NOT NULL DEFAULT 0,
     TotalAjustesPositivos FLOAT NOT NULL DEFAULT 0,
     TotalAjustesNegativos FLOAT NOT NULL DEFAULT 0,
     Existencia FLOAT NOT NULL DEFAULT 0,
@@ -163,13 +163,13 @@ CREATE TABLE Stock
     CONSTRAINT FK_Stock_NroLote FOREIGN KEY (NroLote) REFERENCES Lote(NroLote),
 
     CONSTRAINT CHK_Stock_Estado CHECK (Estado IN (0,1)),
-    CONSTRAINT CHK_Stock_TotalMayor CHECK (TotalCompras >= 0 AND TotalDevoluciones >= 0 AND TotalTranferenciasEntrada >= 0 AND TotalAjustesPositivos >= 0 AND Existencia >= 0),
+    CONSTRAINT CHK_Stock_TotalMayor CHECK (TotalCompras >= 0 AND TotalDevoluciones >= 0 AND TotalTransferenciasEntrada >= 0 AND TotalAjustesPositivos >= 0 AND Existencia >= 0),
     CONSTRAINT CHK_Stock_TotalMenor CHECK (TotalVentas >= 0 AND TotalTransferenciasSalida >= 0 AND TotalAjustesNegativos <= 0),
 
 );
 GO
 
-CREATE PROCEDURE TransaccionEliminado
+CREATE PROCEDURE triggerTransaccionEliminado
 AS
 BEGIN
    BEGIN TRY

@@ -1,12 +1,10 @@
-USE COMERCIAL
+USE COMERCIAL;
 GO
 
 CREATE PROCEDURE triggerDesplegarArticulos
 AS
 BEGIN
-   BEGIN TRY
-      BEGIN TRANSACTION
-
+    BEGIN TRY
         SELECT 
             A.NroArticulo,
             A.DesArticulo,
@@ -16,26 +14,18 @@ BEGIN
             CASE 
                 WHEN SUM(S.Existencia) = 0 THEN 0
                 ELSE 
-                    (SUM(CASE WHEN L.FechaVencimiento < GETDATE() THEN S.Existencia ELSE 0 END) * 100.0) 
-                    / SUM(S.Existencia)
+                    (SUM(CASE WHEN L.FechaVencimiento < GETDATE() THEN S.Existencia ELSE 0 END) * 100.0) / SUM(S.Existencia)
             END AS PorcentajeVencido
         FROM Articulo A
-        INNER JOIN Stock S 
-            ON A.NroArticulo = S.NroArticulo
-        INNER JOIN Lote L
-            ON S.NroLote = L.NroLote
-        GROUP BY 
-            A.NroArticulo, 
-            A.DesArticulo
-        ORDER BY 
-            PorcentajeVencido DESC;
+        INNER JOIN Stock S ON A.NroArticulo = S.NroArticulo
+        INNER JOIN Lote L ON S.NroLote = L.NroLote
+        GROUP BY A.NroArticulo, A.DesArticulo
+        ORDER BY PorcentajeVencido DESC;
+    END TRY
 
-      COMMIT TRANSACTION
-  END TRY
-  BEGIN CATCH
-        ROLLBACK TRANSACTION
-        PRINT 'Error ';
+    BEGIN CATCH
+        PRINT 'Error al mostrar los artículos:';
         PRINT ERROR_MESSAGE();
-   END CATCH
+    END CATCH
 END
 GO
